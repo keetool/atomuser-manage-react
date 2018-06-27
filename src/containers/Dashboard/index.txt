@@ -1,51 +1,45 @@
 import React from "react";
 import { translate } from "react-i18next";
-import CustomCard from "../../components/common/Card";
-import { Row, Col, Icon } from "antd";
+import { Card, Row, Col,Icon } from "antd";
 import { Chart, Axis, Tooltip, Geom, } from "bizcharts";
-import styles from './styles.less';
 
-const monthFormater = (val)=>{
-  return val*1+1;
-}
-const chartScale = {
-  month: {
-    type: "cat",
-    range: [0, 1]
-  },
-};
+
 
 class DashboardContainer extends React.Component {
   constructor(props, context) {
     super(props, context);
   }
 
-
   componentDidMount() { }
 
   render() {
     const { t } = this.props;
     let data = [];
-    let data2 = [];
     for (let i = 0; i < 12; i++) {
-      data = [...data, { month: i, amount: i % 2 == 0 ? i * 2 : i * 3 }];
-    }
-    for (let i = 0; i < 12; i++) {
-      data2 = [...data2, { month: i, 'amount': i % 2 == 0 ? i * 2 : i * 3 }];
+      data = [...data, { month: i, amount: i % 2 == 0 ? i * 2 : i *3 }];
     }
     return (<div>
+      {t("manage.login.form.description")}
       <div>
         <Row gutter={24}>
           <Col span={6}>
-            <CustomCard
-              title={t("manage.dashboard.card_user.title")}
-              style={styles['card-lite']}
+             
+            <Card 
+            style={{ height: 300 }} 
+            title={t("manage.dashboard.card_post.title")}
+            bordered={false}
             >
-              <Icon type="user" />  <b>8,864</b>
+            <Card.Meta avatar={<Icon type="user" />} title={'8,864'}>  </Card.Meta>
+              
               <Chart
-                scale={chartScale}
+                scale={{
+                  month: {
+                    type: "cat",
+                    range: [0, 1]
+                  },
+                }}
                 height={200} width={400} data={data} style={{ marginLeft: -60 }}>
-                <Axis name="month" label={{ formatter: monthFormater }} />
+                <Axis name="month" label={{ formatter: (val) => val*1+1 }} />
                 <Axis name="amount" label={{ formatter: () => `` }} />
                 <Tooltip crosshairs={{ type: "y" }} />
                 <Geom
@@ -56,19 +50,20 @@ class DashboardContainer extends React.Component {
                   size={2}
                   color={'green'} />
               </Chart>
-            </CustomCard>
+            </Card>
           </Col>
-
           <Col span={6}>
-            <CustomCard
-              title={t("manage.dashboard.card_post.title")}
-              style={{ height: 260 }}
-            >
-              <Icon type="book" />  <b>3,142</b>
+            <Card style={{ height: 300 }} title="Số bài đăng" bordered={false}>
+              <Card.Meta avatar={<Icon type="book" />} title={'3,142'}>  </Card.Meta>
               <Chart
-                scale={chartScale}
+                scale={{
+                  month: {
+                    type: "cat",
+                    range: [0, 1]
+                  },
+                }}
                 height={200} width={400} data={data} style={{ marginLeft: -60 }}>
-                <Axis name="month" label={{ formatter: monthFormater }} />
+                <Axis name="month" label={{ formatter: (val) => val }} />
                 <Axis name="amount" label={{ formatter: () => `` }} />
                 <Tooltip crosshairs={{ type: "y" }} />
                 <Geom
@@ -79,28 +74,39 @@ class DashboardContainer extends React.Component {
                   size={2}
                   color={'orange'} />
               </Chart>
-            </CustomCard>
+            </Card>
           </Col>
 
         </Row>
         <br />
         <Row gutter={24}>
           <Col span={24}>
-            <CustomCard
-              title={t("manage.dashboard.card_new_user.title")}
-            >
+            <Card title="Số lượng người dùng mới">
               <Chart
                 height={400}
                 width={1200}
-                data={data2}
-                scale={chartScale}
+                data={data}
+                scale={{
+                  month: {
+                    type: "cat",
+                    range: [0, 1]
+                  },
+                }}
               >
-                <Axis label={{ formatter: monthFormater }}/>
-                <Axis label={{ formatter: val => `${val}` }} />
+                <Axis 
+                  name="month" 
+                  label={{ formatter: val => `${val}` }}
+                  title={{
+                    autoRotate: true,
+                    position: 'end',
+                  }}
+
+                />
+                <Axis name="amount" label={{ formatter: val => `${val}` }} title />
                 <Tooltip crosshairs={{ type: "y" }} />
-                <Geom shape="area" type="interval" position="month*amount" size={20} color={'red'} />
+                <Geom shape="area" Active={true} type="interval" position="month*amount" size={20} color={'red'} />
               </Chart>
-            </CustomCard>
+            </Card>
           </Col>
 
         </Row>
