@@ -85,7 +85,7 @@ const i18n = use(Backend)
     },
     interpolation: {
       format: function(value, format) {
-        console.log(value);
+        //console.log(value);
         if (format === "uppercase") return value.toUpperCase();
         if (format === "lowercase") return value.toLowerCase();
         return capitalizeFirstLetter(value);
