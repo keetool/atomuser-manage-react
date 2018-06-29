@@ -53,10 +53,8 @@ class DashboardContainer extends React.Component {
   }
 
   changeDate = (date, name) => {
-    //console.log(date.format('D-M-Y'));
     let filter = { ...this.state.filter };
     filter[name] = date;
-    console.log(filter);
     this.setState({ filter: filter });
     let { start_time, end_time } = filter;
     if (start_time && end_time) {
