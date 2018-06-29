@@ -11,6 +11,7 @@ const dateFormater = (val) => {
   let res = moment(val).format('D/M');
   return res;
 };
+
 const chartScale = {
   date: {
     type: "cat",
