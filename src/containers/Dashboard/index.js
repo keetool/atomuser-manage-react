@@ -106,7 +106,10 @@ class DashboardContainer extends React.Component {
             >
               <Chart
                 scale={chartScale}
-                height={200} width={400} data={data} style={{ marginLeft: -60 }}>
+                height={200} width={400} data={data} 
+                style={{ marginLeft: -60 }}
+                forceFit
+                >
                 <Axis name="date" label={{ formatter: dateFormater }} />
                 <Axis name="count" label={{ formatter: () => `` }} />
                 {cardTooltip(t("manage.dashboard.card_user.title"))}
@@ -135,7 +138,9 @@ class DashboardContainer extends React.Component {
 
               <Chart
                 scale={chartScale}
-                height={200} width={400} data={data} style={{ marginLeft: -60 }}>
+                height={200} width={400} data={data} style={{ marginLeft: -60 }}
+                forceFit
+                >
                 <Axis name="date" label={{ formatter: dateFormater }} />
                 <Axis name="count" label={{ formatter: () => `` }} />
                 {cardTooltip(t("manage.dashboard.card_post.title"))}
@@ -165,6 +170,7 @@ class DashboardContainer extends React.Component {
                 width={1200}
                 data={data}
                 scale={chartScale}
+                forceFit
               >
                 <Axis name="date" label={{ formatter: dateFormater }} />
                 <Axis name="count" label={{ formatter: val => `${val}` }} />
