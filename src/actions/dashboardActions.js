@@ -7,7 +7,7 @@ export function getDashboard(setState, params = {}) {
   getDashboardApi(params)
     .then(res => {
       if (httpSuccess(res.status)) {
-        res.data.new_user_id_by_date = res.data.new_user_id_by_date.map((obj, index)=>{
+          res.data.new_user_id_by_date = res.data.new_user_id_by_date.map((obj, index)=>{
           return {...obj, count: index % 2 == 0 ? index * index * 3 : index * index * index}
       })
         setState({

@@ -106,7 +106,7 @@ class DashboardContainer extends React.Component {
             >
               <Chart
                 scale={chartScale}
-                height={200} width={400} data={data} 
+                height={200} data={data} 
                 style={{ marginLeft: -60 }}
                 forceFit
                 >
@@ -138,7 +138,7 @@ class DashboardContainer extends React.Component {
 
               <Chart
                 scale={chartScale}
-                height={200} width={400} data={data} style={{ marginLeft: -60 }}
+                height={200}  data={data} style={{ marginLeft: -60 }}
                 forceFit
                 >
                 <Axis name="date" label={{ formatter: dateFormater }} />
@@ -166,11 +166,10 @@ class DashboardContainer extends React.Component {
               title={t("manage.dashboard.card_new_user.title")}
             >
               <Chart
-                height={400}
-                width={1200}
                 data={data}
                 scale={chartScale}
                 forceFit
+                height={350}
               >
                 <Axis name="date" label={{ formatter: dateFormater }} />
                 <Axis name="count" label={{ formatter: val => `${val}` }} />
