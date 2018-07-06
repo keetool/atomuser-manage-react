@@ -1,9 +1,9 @@
 export const TOKEN_EXPIRED_TIME = "518400"; //ms
 export const PATH_REDIRECT_NO_AUTH = "signin";
 export const LOGO_SIDER =
-  "https://d1j8r0kxyu9tj8.cloudfront.net/files/1527836835agwLmRolMVrN7Fs.png";
+  "http://d1j8r0kxyu9tj8.cloudfront.net/files/1530850489225eAEbQhzPyAZr.png";
 export const LOGO_HEADER =
-  "https://d1j8r0kxyu9tj8.cloudfront.net/files/1527837100Awhblu215Uvr3ri.png";
+  "http://d1j8r0kxyu9tj8.cloudfront.net/files/1530850066mZseLAfrPQzVJNI.png";
 
 export const LOGO_HEADER_SIGN_IN =
   "http://d1j8r0kxyu9tj8.cloudfront.net/files/1530850066LBfEMTMmumoPfiX.png";
