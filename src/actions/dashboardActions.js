@@ -2,17 +2,19 @@ import { getDashboardApi } from "../apis/dashboardApis";
 import { httpSuccess, messageHttpRequest } from "../helpers/httpRequest";
 
 
-export function getDashboard(setState, params = {}) {
+export function getDashboard(setState,type, dataName, params = {}) {
   setState({ isLoading: true });
-  getDashboardApi(params)
+  getDashboardApi(type,params)
     .then(res => {
       if (httpSuccess(res.status)) {
-          res.data.new_user_id_by_date = res.data.new_user_id_by_date.map((obj, index)=>{
-          return {...obj, count: index % 2 == 0 ? index * index * 3 : index * index * index}
-      })
+        let total = res.data['total_users'];
+        res.data = res.data[dataName || type]
+           .map((obj, index)=>{return {...obj, count: index % 2 == 0 ? index * index * 3 : index * index * index};});
+          
         setState({
           isLoading: false,
           data: res.data,
+          total
         });
       }
     })
@@ -23,3 +25,15 @@ export function getDashboard(setState, params = {}) {
         setState({ isLoading: false });
     });
 }
+
+//  res :{
+//    data:{
+//      charts: [
+//        {date: '', count:''},
+//        {date: '', count:''},
+//        {date: '', count:''},
+//        {date: '', count:''},
+//      ],
+//      total: 1234
+//    }
+//  }
