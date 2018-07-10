@@ -4,9 +4,9 @@ import { translate } from "react-i18next";
 import { Card,  } from "antd";
 import { Chart, Axis, Geom, } from "bizcharts";
 import styles from '../styles.less';
-import { chartScale, dateFormater, mainColor, CardTitle, cardTooltip } from './Common';
+import { chartScale, dateFormater, mainColor,  cardTooltip } from './Common';
 import { getDashboard } from "../../../actions/dashboardActions";
-
+import  CardTitle  from "../component/CardTitle";
 class UserCard extends Component {
     constructor(props, context) {
         super(props, context);
@@ -17,27 +17,18 @@ class UserCard extends Component {
         isLoading: false,
         data: [],
         total: 0,
-        filter: {
-            start_time: '',
-            end_time: '',
-        }
     }
 
     componentDidMount() {
-        getDashboard(this.setData, 'users-by-date', 'new_user_by_date');
+        getDashboard(this.setData, 'users-by-date');
     }
 
-    changeDate = (date, dateString) => {
-        let filter = { ...this.state.filter };
-        filter.start_time = dateString[0];
-        filter.end_time = dateString[1];
-        this.setState({ filter: filter });
-    
-        getDashboard(this.setData,'users-by-date', 'new_user_by_date',{
-          start_time: date[0] ? date[0].format('Y-M-D') : '',
-          end_time: date[1] ? date[1].format('Y-M-D') : '',
+    changeDate = (dateString) => {
+        getDashboard(this.setData, 'users-by-date', {
+            start_time: dateString[0],
+            end_time: dateString[1],
         });
-    
+
     }
 
     render() {
@@ -47,6 +38,7 @@ class UserCard extends Component {
         return (
 
             <Card
+                loading={isLoading}
                 title={
                     <CardTitle
                         title={t("manage.dashboard.card_user.title")}
@@ -57,13 +49,12 @@ class UserCard extends Component {
                     />
                 }
                 className={styles['card-lite']}
-                
+
             >
-                
                 <Chart
                     scale={chartScale}
                     height={200} data={data}
-                    style={{ marginLeft: -60, overflow: 'hidden' }}
+                    className={styles['charts']}
                     forceFit
                 >
                     <Axis name="date" label={{ formatter: dateFormater }} />
@@ -76,9 +67,9 @@ class UserCard extends Component {
                         position="date*count"
                         size={2}
                         color={mainColor} />
-                    
+
                 </Chart>
-                
+
             </Card>
 
         );

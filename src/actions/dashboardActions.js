@@ -2,13 +2,13 @@ import { getDashboardApi } from "../apis/dashboardApis";
 import { httpSuccess, messageHttpRequest } from "../helpers/httpRequest";
 
 
-export function getDashboard(setState,type, dataName, params = {}) {
+export function getDashboard(setState,type,params = {}) {
   setState({ isLoading: true });
   getDashboardApi(type,params)
     .then(res => {
       if (httpSuccess(res.status)) {
-        let total = res.data['total_users'];
-        res.data = res.data[dataName || type]
+        let total = res.data['total'];
+        res.data = res.data['charts']
            .map((obj, index)=>{return {...obj, count: index % 2 == 0 ? index * index * 3 : index * index * index};});
           
         setState({

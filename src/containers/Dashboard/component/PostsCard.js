@@ -4,8 +4,9 @@ import { translate } from "react-i18next";
 import { Card, } from "antd";
 import { Chart, Axis, Geom, } from "bizcharts";
 import styles from '../styles.less';
-import { chartScale, dateFormater, mainColor, CardTitle, cardTooltip } from './Common';
+import { chartScale, dateFormater, mainColor, cardTooltip } from './Common';
 import { getDashboard } from "../../../actions/dashboardActions";
+import  CardTitle  from "../component/CardTitle";
 
 class SmallPostCard extends Component {
     constructor(props, context) {
@@ -16,35 +17,48 @@ class SmallPostCard extends Component {
     state = {
         isLoading: false,
         data: [],
+        total: 0,
     }
 
     componentDidMount() {
-        getDashboard(this.setData, 'posts-by-date', 'posts_by_date');
+        getDashboard(this.setData, 'posts-by-date');
+    }
+
+    changeDate = (dateString) => {
+    
+        getDashboard(this.setData,'posts-by-date',{
+          start_time: dateString[0],
+          end_time: dateString[1],
+        });
+    
     }
 
     render() {
         let { t } = this.props;
-        let { isLoading, data } = this.state;
+        let { isLoading, data,total } = this.state;
         // console.log(data);
         return (
 
             <Card
+                loading={isLoading}
                 title={
-
                     <CardTitle
                         title={t("manage.dashboard.card_post.title")}
-                        value={'3,141'}
-                        icon='book'
+                        value={total}
+                        icon="book"
                         isLoading={isLoading}
-                    // changeDate={this.changeDate}
+                        changeDate={this.changeDate}
                     />
                 }
                 className={styles['card-lite']}
             >
                 <Chart
+                    
                     scale={chartScale}
-                    height={200} data={data.slice(0, 7)} style={{ marginLeft: -60, overflow: 'hidden' }}
+                    height={200} 
+                    data={data} 
                     forceFit
+                    className={styles['charts']}
                 >
                     <Axis name="date" label={{ formatter: dateFormater }} />
                     <Axis name="count" label={{ formatter: () => `` }} />
