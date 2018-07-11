@@ -1,8 +1,9 @@
 import axios from "axios";
-import { BASE_API_URL } from "../constants/env";
+import { MANAGE_API_URL } from "../constants/env";
 
-export function getDashboardApi(params = {}) {
-  let url = BASE_API_URL + `v1/dashboard`;
+export function getDashboardApi(type,params = {}) {
+  
+  let url = MANAGE_API_URL + `v1/dashboard/` + type;
   return axios.get(url, {
     params: {
       start_time: params.start_time || '',

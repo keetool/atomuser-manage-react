@@ -36,7 +36,7 @@ class SiderMenu extends React.Component {
         >
           <Link to="/">
             <img src={logo} alt="logo" />
-            {!collapsed && <h1>KEETOOL</h1>}
+            {!collapsed && <h1>atomuser</h1>}
           </Link>
         </div>
         <Scrollbars
