@@ -11,3 +11,8 @@ export function getDashboardApi(type,params = {}) {
     }
   });
 }
+export function test123() {
+  
+  let url = 'https://k.atomuser.com/client-api/v1/user/notification/1/seen';
+  return axios.put(url);
+}

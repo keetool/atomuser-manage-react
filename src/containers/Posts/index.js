@@ -1,26 +1,20 @@
 import React, { Component } from "react";
-import { getLogs } from "../../actions/logActions";
-import { parseLog } from "../../helpers/parse";
+import { getPosts } from "../../actions/postsActions";
+// import { parseLog } from "../../helpers/parse";
 import { withAccount } from "../../components/context/AccountContext";
-import { Table } from "antd";
+import { Table, Divider } from "antd";
 import styles from "./styles.less";
 import { translate } from "react-i18next";
-import { capitalizeFirstLetter, formatSortTable } from "../../helpers/utility";
+import { shortString, capitalizeFirstLetter, formatSortTable } from "../../helpers/utility";
 import { formatTime } from "../../helpers/time";
+import { div } from "gl-matrix/src/gl-matrix/vec4";
 
 const columns = t => {
   return [
     {
-      title: capitalizeFirstLetter(t("manage.log.table.header_column_action")),
-      dataIndex: "action",
-      key: "action",
-      render: text => `${capitalizeFirstLetter(t(text))}`,
-      width: "30%"
-    },
-    {
-      title: capitalizeFirstLetter(t("manage.log.table.header_column_content")),
-      dataIndex: "message",
-      key: "message",
+      title: capitalizeFirstLetter(t("manage.post.table.header.creator")),
+      dataIndex: "creator_name",
+      key: "creator_name",
       width: "30%",
       render: (text, row, index) => {
         return (
@@ -34,11 +28,33 @@ const columns = t => {
       }
     },
     {
-      title: capitalizeFirstLetter(t("manage.log.table.header_column_time")),
+      title: capitalizeFirstLetter(t("manage.post.table.header.body")),
+      dataIndex: "body",
+      key: "body",
+      render: text => `${capitalizeFirstLetter(t(text))}`,
+      width: "30%"
+    },
+
+    {
+      title: capitalizeFirstLetter(t("manage.post.table.header.created_at")),
       dataIndex: "created_at",
       key: "created_at",
       sorter: true
-    }
+    },
+    {
+      title: 'Action',
+      dataIndex: '',
+      key: 'x',
+      render: () => (
+        <span>
+          <a href="javascript:;">Ẩn</a>
+          <Divider type="vertical" />
+          <a href="javascript:;">Xoá</a>
+          <Divider type="vertical" />
+          <a href="javascript:;">Chi tiết</a>
+        </span>
+      )
+    },
   ];
 };
 
@@ -55,7 +71,7 @@ class PostsContainer extends Component {
   };
 
   componentDidMount() {
-    getLogs(this.setData);
+    getPosts(this.setData);
   }
 
   handleTableChange = (pagination, filters, sorter) => {
@@ -64,7 +80,7 @@ class PostsContainer extends Component {
     this.setState({
       pagination: pager
     });
-    getLogs(this.setData, {
+    getPosts(this.setData, {
       page: pagination.current,
       sortCreatedAt: formatSortTable(sorter, "created_at"),
       ...filters
@@ -73,16 +89,16 @@ class PostsContainer extends Component {
 
   render() {
     const { data, isLoading, pagination } = this.state;
-    const { account, t } = this.props;
+    const { t } = this.props;
 
     const dataSource = data
-      ? data.map(log => {
-          return {
-            action: log.action,
-            message: parseLog(log.log, account.id),
-            created_at: formatTime(log.created_at)
-          };
-        })
+      ? data.map(obj => {
+        return {
+          creator_name: obj.creator.name,
+          body: shortString(obj.body, 20),
+          created_at: formatTime(obj.created_at)
+        };
+      })
       : [];
 
     return (
@@ -94,7 +110,6 @@ class PostsContainer extends Component {
           loading={isLoading}
           pagination={pagination}
           onChange={this.handleTableChange}
-          scroll={{ y: "60vh" }}
         />
       </div>
     );

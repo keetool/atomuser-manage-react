@@ -188,3 +188,7 @@ export function formatSortTable(sorter, key) {
   }
   return "";
 }
+
+export function shortString(input = "", length){
+    return input.substr(0,length) + "...";
+}

@@ -1,4 +1,4 @@
-import { getDashboardApi } from "../apis/dashboardApis";
+import { getDashboardApi,test123 } from "../apis/dashboardApis";
 import { httpSuccess, messageHttpRequest } from "../helpers/httpRequest";
 
 
@@ -23,6 +23,15 @@ export function getDashboard(setState,type,params = {}) {
     })
     .finally(()=>{
         setState({ isLoading: false });
+    });
+}
+export function test() {
+  
+  test123().then(res => {
+      console.log(res);
+    })
+    .catch(error => {
+      messageHttpRequest(error);
     });
 }
 
