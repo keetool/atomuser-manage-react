@@ -2,39 +2,53 @@ import React, { Component } from "react";
 import { getPosts } from "../../actions/postsActions";
 // import { parseLog } from "../../helpers/parse";
 import { withAccount } from "../../components/context/AccountContext";
-import { Table, Divider } from "antd";
+import { Table, Tooltip, Button,Avatar,  } from "antd";
 import styles from "./styles.less";
 import { translate } from "react-i18next";
 import { shortString, capitalizeFirstLetter, formatSortTable } from "../../helpers/utility";
 import { formatTime } from "../../helpers/time";
-import { div } from "gl-matrix/src/gl-matrix/vec4";
+
 
 const columns = t => {
   return [
     {
       title: capitalizeFirstLetter(t("manage.post.table.header.creator")),
-      dataIndex: "creator_name",
-      key: "creator_name",
-      width: "30%",
-      render: (text, row, index) => {
+      dataIndex: "creator",
+      key: "creator",
+      width: "15%",
+      render: (obj, row, index) => {
+        //console.log(obj, row, index);
         return (
-          <div
-            key={index}
-            dangerouslySetInnerHTML={{
-              __html: text
-            }}
-          />
+          <div key={index}><Avatar  src={obj.avatar_url} />   {obj.name}</div>
         );
       }
     },
+  
     {
       title: capitalizeFirstLetter(t("manage.post.table.header.body")),
       dataIndex: "body",
       key: "body",
       render: text => `${capitalizeFirstLetter(t(text))}`,
-      width: "30%"
+      width: "20%"
     },
-
+    {
+      title: "Comments",
+      dataIndex: "comment",
+      key: "comment",
+      render: text => text,
+    },
+    {
+      title: "Up vote",
+      dataIndex: "upvote",
+      key: "upvote",
+      render: text => text,
+    },
+    {
+      title: "Down vote",
+      dataIndex: "downvote",
+      key: "downvote",
+      render: text => text,
+    },
     {
       title: capitalizeFirstLetter(t("manage.post.table.header.created_at")),
       dataIndex: "created_at",
@@ -42,16 +56,16 @@ const columns = t => {
       sorter: true
     },
     {
-      title: 'Action',
+      title: '',
       dataIndex: '',
       key: 'x',
       render: () => (
         <span>
-          <a href="javascript:;">Ẩn</a>
-          <Divider type="vertical" />
-          <a href="javascript:;">Xoá</a>
-          <Divider type="vertical" />
-          <a href="javascript:;">Chi tiết</a>
+          <Button.Group>
+            <Tooltip title={t("manage.post.table.action.hide")}><Button icon="close-circle-o" /></Tooltip>
+            <Tooltip title={t("manage.post.table.action.detail")}><Button icon="info-circle-o" /></Tooltip>
+          </Button.Group>
+
         </span>
       )
     },
@@ -95,6 +109,10 @@ class PostsContainer extends Component {
       ? data.map(obj => {
         return {
           creator_name: obj.creator.name,
+          creator: obj.creator,
+          comment: obj.num_comments,
+          upvote: obj.upvote,
+          downvote: obj.downvote,
           body: shortString(obj.body, 20),
           created_at: formatTime(obj.created_at)
         };

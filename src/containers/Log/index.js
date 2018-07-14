@@ -26,10 +26,8 @@ const columns = t => {
         return (
           <div
             key={index}
-            dangerouslySetInnerHTML={{
-              __html: text
-            }}
-          />
+            
+          >{text}</div>
         );
       }
     },
