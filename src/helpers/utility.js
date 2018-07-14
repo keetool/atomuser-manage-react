@@ -190,5 +190,5 @@ export function formatSortTable(sorter, key) {
 }
 
 export function shortString(input = "", length){
-    return input.substr(0,length) + "...";
+    return input.substr(0,length) + (input.length > length ? "..." : "");
 }

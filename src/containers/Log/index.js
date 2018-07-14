@@ -23,12 +23,14 @@ const columns = t => {
       key: "message",
       width: "30%",
       render: (text, row, index) => {
-        return (
+        const comp =(
           <div
             key={index}
-            
-          >{text}</div>
+            // eslint-disable-next-line
+            dangerouslySetInnerHTML={{ __html: `${t(text)}` }}
+          />
         );
+        return comp;
       }
     },
     {

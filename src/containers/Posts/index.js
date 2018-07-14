@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import { getPosts } from "../../actions/postsActions";
+import { getPosts, hidePost } from "../../actions/postsActions";
 // import { parseLog } from "../../helpers/parse";
 import { withAccount } from "../../components/context/AccountContext";
-import { Table, Tooltip, Button,Avatar,  } from "antd";
+import { Table, Tooltip, Avatar, Icon, Divider, Modal } from "antd";
 import styles from "./styles.less";
 import { translate } from "react-i18next";
 import { shortString, capitalizeFirstLetter, formatSortTable } from "../../helpers/utility";
 import { formatTime } from "../../helpers/time";
-
+import { BASE_URL } from "../../constants/env";
 
 const columns = t => {
   return [
@@ -15,59 +15,73 @@ const columns = t => {
       title: capitalizeFirstLetter(t("manage.post.table.header.creator")),
       dataIndex: "creator",
       key: "creator",
-      width: "15%",
+      width: "25%",
       render: (obj, row, index) => {
-        //console.log(obj, row, index);
-        return (
-          <div key={index}><Avatar  src={obj.avatar_url} />   {obj.name}</div>
-        );
+        const comp = (<div key={index}><Avatar src={obj.avatar_url} />
+          {'\u00A0\u00A0'}
+          <a href="#" >{obj.name}</a>
+        </div>);
+        return comp;
       }
     },
-  
     {
       title: capitalizeFirstLetter(t("manage.post.table.header.body")),
       dataIndex: "body",
       key: "body",
-      render: text => `${capitalizeFirstLetter(t(text))}`,
+      render: (text, row, index) => {
+        const comp=(
+          <div
+            key={index}
+            // eslint-disable-next-line
+            dangerouslySetInnerHTML={{ __html: `${t(text)}` }}
+          />
+        );
+        return comp;
+      },
       width: "20%"
     },
     {
-      title: "Comments",
-      dataIndex: "comment",
-      key: "comment",
-      render: text => text,
-    },
-    {
-      title: "Up vote",
-      dataIndex: "upvote",
-      key: "upvote",
-      render: text => text,
-    },
-    {
-      title: "Down vote",
-      dataIndex: "downvote",
-      key: "downvote",
-      render: text => text,
+      title: '',
+      dataIndex: 'info',
+      key: 'info',
+      render: (obj) => {
+        const comp = (<span>
+          <Tooltip title={obj.upvote + " " + capitalizeFirstLetter(t("social.home.post_item.upvote"))}>
+            <Icon type="caret-up" /> {obj.upvote}</Tooltip>
+          <Divider type="vertical" />
+          <Tooltip title={obj.downvote + " " + capitalizeFirstLetter(t("social.home.post_item.downvote"))}>
+            <Icon type="caret-down" /> {obj.downvote}</Tooltip>
+          <Divider type="vertical" />
+          <Tooltip title={obj.comment + " " + capitalizeFirstLetter(t("social.home.post_item.comment"))}>
+            <Icon type="message" /> {obj.comment}</Tooltip>
+        </span>);
+        return comp;
+      }
     },
     {
       title: capitalizeFirstLetter(t("manage.post.table.header.created_at")),
       dataIndex: "created_at",
       key: "created_at",
-      sorter: true
+      // sorter: true
     },
     {
       title: '',
-      dataIndex: '',
-      key: 'x',
-      render: () => (
+      dataIndex: 'actions',
+      key: 'actions',
+      render: (obj) => {
+        const comp = (
         <span>
-          <Button.Group>
-            <Tooltip title={t("manage.post.table.action.hide")}><Button icon="close-circle-o" /></Tooltip>
-            <Tooltip title={t("manage.post.table.action.detail")}><Button icon="info-circle-o" /></Tooltip>
-          </Button.Group>
-
-        </span>
-      )
+          <Tooltip title={t("manage.post.table.action.hide")}>
+            <Icon className={styles["table-action-icon"]} type="close-circle" onClick={() => obj.confirmHidePost(obj.post_id)} />
+          </Tooltip>
+          <Tooltip title={t("manage.post.table.action.detail")}>
+            <a href={BASE_URL + '/post/' + obj.post_id} target="_blank" rel="noopener noreferrer">
+              <Icon className={styles["table-action-icon"]} type="info-circle" />
+            </a>
+          </Tooltip>
+        </span>);
+        return comp;
+    }
     },
   ];
 };
@@ -86,6 +100,18 @@ class PostsContainer extends Component {
 
   componentDidMount() {
     getPosts(this.setData);
+  }
+
+  confirmHidePost = (post_id) => {
+    let { t } = this.props;
+    Modal.confirm({
+      title: t('manage.post.confirm.hide_post'),
+      content: t('manage.post.confirm.description'),
+      okType: 'danger',
+      onOk: () => {
+        hidePost(this.setData, () => getPosts(this.setData), post_id);
+      },
+    });
   }
 
   handleTableChange = (pagination, filters, sorter) => {
@@ -108,11 +134,17 @@ class PostsContainer extends Component {
     const dataSource = data
       ? data.map(obj => {
         return {
-          creator_name: obj.creator.name,
+
           creator: obj.creator,
-          comment: obj.num_comments,
-          upvote: obj.upvote,
-          downvote: obj.downvote,
+          info: {
+            comment: obj.num_comments,
+            upvote: obj.upvote,
+            downvote: obj.downvote,
+          },
+          actions: {
+            post_id: obj.id,
+            confirmHidePost: this.confirmHidePost
+          },
           body: shortString(obj.body, 20),
           created_at: formatTime(obj.created_at)
         };

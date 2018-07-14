@@ -2,7 +2,7 @@ import React from "react";
 import { translate } from "react-i18next";
 import { Row, Col, } from "antd";
 //---import actions---
-import { test } from "../../actions/dashboardActions";
+// import { test } from "../../actions/dashboardActions";
 //---import child components---
 import SmallUserCard from './component/UsersCard';
 import SmallPostCard from './component/PostsCard';
@@ -22,7 +22,6 @@ class DashboardContainer extends React.Component {
 
   componentDidMount() {
     // getDashboard(this.setData,'users-by-date');
-    test();
   }
   //filter by date
   // changeDate = (date, dateString) => {

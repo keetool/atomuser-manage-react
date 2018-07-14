@@ -11,3 +11,7 @@ export function getPostsApi(params = {}) {
     }
   });
 }
+export function hidePostApi(postId) {
+  let url = MANAGE_API_URL + `v1/post/hide/` +postId;
+  return axios.put(url);
+}
