@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { getUsers } from '../../actions/userActions';
-//import { parseLog } from "../../helpers/parse";
 import { withAccount } from '../../components/context/AccountContext';
-import { Table } from 'antd';
+import { Table, Avatar } from 'antd';
 import styles from './styles.less';
 import { translate } from 'react-i18next';
 import { capitalizeFirstLetter, formatSortTable } from '../../helpers/utility';
-//import { formatTime } from "../../helpers/time";
+import { formatTime } from '../../helpers/time';
+//import classNamesBind from 'classnames/bind';
+import ListsHeader from './components/ListsHeader';
+
+//let cx = classNamesBind.bind(styles);
 
 const columns = (t) => {
 	return [
@@ -14,25 +17,7 @@ const columns = (t) => {
 			dataIndex: 'avatar_url',
 			key: 'avatar_url',
 			render: (avatar) => {
-				return (
-					<img
-						style={{
-							width: '30px',
-							height: '30px',
-							borderRadius: '50%',
-							verticalAlign: 'middle',
-							background: 'url(' + avatar + ') center center / cover',
-							display: 'inline-block',
-							float: 'right',
-							marginLeft: '3px'
-						}}
-						data-toggle="tooltip"
-						title=""
-						type="button"
-						rel="tooltip"
-						data-original-title=""
-					/>
-				);
+				return <Avatar size="large" src={avatar} />;
 			}
 		},
 		{
@@ -55,6 +40,21 @@ const columns = (t) => {
 			dataIndex: 'created_at',
 			key: 'created_at',
 			sorter: true
+		},
+		{
+			title: capitalizeFirstLetter(t('manage.dashboard.card_post.title')),
+			dataIndex: 'posts_count',
+			key: 'posts_count'
+		},
+		{
+			title: capitalizeFirstLetter(t('manage.user.table_user.upvotes')),
+			dataIndex: 'votes_count',
+			key: 'votes_count'
+		},
+		{
+			title: capitalizeFirstLetter(t('social.profile.info.comment')),
+			dataIndex: 'comments_count',
+			key: 'comments_count'
 		}
 	];
 };
@@ -68,7 +68,10 @@ class UsersContainer extends Component {
 	state = {
 		isLoading: true,
 		data: [],
-		pagination: null
+		pagination: null,
+		comments_count: 0,
+		posts_count: 0,
+		users_count: 0
 	};
 
 	componentDidMount() {
@@ -76,7 +79,9 @@ class UsersContainer extends Component {
 	}
 
 	handleTableChange = (pagination, filters, sorter) => {
-		const pager = { ...this.state.pagination };
+		const pager = {
+			...this.state.pagination
+		};
 		pager.current = pagination.current;
 		this.setState({
 			pagination: pager
@@ -89,9 +94,8 @@ class UsersContainer extends Component {
 	};
 
 	render() {
-		const { data, isLoading, pagination } = this.state;
+		const { data, isLoading, pagination, comments_count, posts_count, users_count } = this.state;
 		const { t } = this.props;
-
 		const dataSource = data
 			? data.map((user) => {
 					return {
@@ -99,22 +103,28 @@ class UsersContainer extends Component {
 						name: user.name,
 						email: user.email,
 						phone: user.phone,
-						created_at: user.created_at
+						created_at: formatTime(user.created_at),
+						posts_count: user.posts_count,
+						votes_count: user.votes_count,
+						comments_count: user.comments_count
 					};
 				})
 			: [];
 
 		return (
-			<div className={styles['table-log']}>
-				<Table
-					dataSource={dataSource}
-					columns={columns(t)}
-					rowKey={(record, index) => index}
-					loading={isLoading}
-					pagination={pagination}
-					onChange={this.handleTableChange}
-					//scroll={{ y: "60vh" }}
-				/>
+			<div>
+				<ListsHeader users_count={users_count} posts_count={posts_count} comments_count={comments_count} />
+				<div className={styles['table-log']}>
+					<Table
+						dataSource={dataSource}
+						columns={columns(t)}
+						rowKey={(record, index) => index}
+						loading={isLoading}
+						pagination={pagination}
+						onChange={this.handleTableChange}
+						//scroll={{ y: "60vh" }}
+					/>
+				</div>
 			</div>
 		);
 	}
