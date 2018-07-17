@@ -1,6 +1,8 @@
 let URL;
 
-if (process.env.NODE_ENV === "production") {
+export const IS_PRODUCTION = process.env.NODE_ENV === "production";
+
+if (IS_PRODUCTION) {
     URL = location.protocol + "//" + location.hostname + "/";
 } else {
     URL = "https://testatom.atomuser.com/";
